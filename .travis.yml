@@ -13,5 +13,5 @@ script:
   - docker build -t payroll-server .
   - docker images
   - docker login -u francobobadilla -p apich4594*
-  - docker push payroll-server
+  - docker push francobobadilla/payroll-server
 
