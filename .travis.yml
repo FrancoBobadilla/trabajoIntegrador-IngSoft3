@@ -6,10 +6,8 @@ jdk:
 services:
   - docker
 
-before_install:
+script:
   - cd server
-  - docker build -t payroll/server .
-  - docker run -d -p 127.0.0.1:80:4567 payroll/server /bin/sh -c "cd /root/server; bundle exec foreman start;"
+  - docker build -t payroll-server .
   - docker ps -a
-  - docker run payroll/server /bin/sh -c "cd /root/server; bundle exec rake test"
 
