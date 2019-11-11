@@ -4,4 +4,5 @@ WORKDIR /opt
 COPY target/server-0.0.1-SNAPSHOT.jar .
 ENV JAVA_OPTS="-Xms32m -Xmx128m"
 EXPOSE 8080
-ENTRYPOINT exec java $JAVA_OPTS -jar server-0.0.1-SNAPSHOT.jar
+CMD ["java", "-Xms32m", "-Xmx128m", "-jar", "-Dserver.port=${PORT}", "server-0.0.1-SNAPSHOT.jar"]
+
