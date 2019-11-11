@@ -11,5 +11,5 @@ script:
   - ls -la
   - mvn clean package spring-boot:repackage  
   - docker build -t payroll-server .
-  - docker ps -a
+  - docker images
 
