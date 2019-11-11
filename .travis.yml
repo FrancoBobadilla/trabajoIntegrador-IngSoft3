@@ -2,3 +2,14 @@ language: java
 
 jdk:
   - openjdk11
+
+services:
+  - docker
+
+before_install:
+  - cd server
+  - docker build -t payroll/server .
+  - docker run -d -p 127.0.0.1:80:4567 payroll/server /bin/sh -c "cd /root/server; bundle exec foreman start;"
+  - docker ps -a
+  - docker run payroll/server /bin/sh -c "cd /root/server; bundle exec rake test"
+
