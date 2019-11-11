@@ -18,4 +18,5 @@ script:
   - wget -qO- https://toolbelt.heroku.com/install.sh | sh
   - echo da893186-5f4e-4132-8f73-2274c44344c2 | docker login -u_ --password-stdin registry.heroku.com
   - docker tag francobobadilla/payroll-server:latest registry.heroku.com/payroll-server-bobadilla/web
-  - docker push registry.heroku.com/payroll-server-bobadilla/web;
+  - docker push registry.heroku.com/payroll-server-bobadilla/web
+  - heroku container:release web --app payroll-server-bobadilla
