@@ -6,10 +6,15 @@ jdk:
 services:
   - docker
 
+addons:
+  sonarcloud:
+    organization: "francobobadilla"
+    token: ad5a121aaef2acbe16431683b60dc9daead13e26
+
 script:
   - cd server
-  - ls -la
-  - mvn clean package spring-boot:repackage  
+  - mvn clean package spring-boot:repackage
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
   - docker build -t payroll-server .
   - docker images
   - docker login -u francobobadilla -p apich4594*
@@ -20,4 +25,3 @@ script:
   - docker tag francobobadilla/payroll-server:latest registry.heroku.com/payroll-server-bobadilla/web
   - heroku container:push web --app=payroll-server-bobadilla
   - heroku container:release web --app=payroll-server-bobadilla
-
