@@ -16,5 +16,5 @@ script:
   - docker tag payroll-server francobobadilla/payroll-server:latest
   - docker push francobobadilla/payroll-server:latest
   - wget -qO- https://toolbelt.heroku.com/install.sh | sh
-  - docker login -u 1709673@ucc.edu.ar -p apich4594* registry.heroku.com
+  - echo "apich4594*" | docker login -u francobobadilla --password-stdin registry.heroku.com
 
