@@ -8,27 +8,27 @@ services:
 
 addons:
   sonarcloud:
-    organization: "francobobadilla"
-    token: ad5a121aaef2acbe16431683b60dc9daead13e26
+    organization: $ORGANIZATION
+    token: $SONARCLOUD_TOKEN
 
 script:
   - cd server
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
   - docker build -t payroll-server .
-  - docker run -d -e "PORT=8080" -p 8080:8080 payroll-server
+  - docker run -d -e "PORT=$PORT" -p $PORT:$PORT payroll-server
   - >
-    export tries=0; 
-    export max_tries=20;
-    while [[ true ]]; do 
+    export tries=0;
+    export max_tries=12;
+    while [[ true ]]; do
       tries=$((tries + 1));
-      echo "esperando servicio... intento [$tries] de [$max_tries]"; 
-      sleep 5; 
-      curl -G localhost:8080
-      look_exit=$?; 
+      echo "esperando servicio... intento [$tries] de [$max_tries]";
+      sleep 5;
+      curl -G localhost:$PORT
+      look_exit=$?;
       if [[ "$look_exit" = "0" ]]
          then echo "servicio disponible"
          break
-      fi 
+      fi
       if [[ "$tries" -ge "$max_tries" ]]
          then echo "límite de tiempo alcanzado"
          exit 1
@@ -39,11 +39,11 @@ script:
   - npm init -y
   - npm install codeceptjs chai --save-dev
   - npx codeceptjs run --steps
-  - docker login -u francobobadilla -p apich4594*
-  - docker tag payroll-server francobobadilla/payroll-server:latest
-  - docker push francobobadilla/payroll-server:latest
-  - curl https://cli-assets.heroku.com/install.sh | sh	
-  - echo b75a94b7-b267-4e0f-8457-f96df4caab68 | docker login -u_ --password-stdin registry.heroku.com	
-  - docker tag francobobadilla/payroll-server:latest registry.heroku.com/payroll-server-bobadilla-stage/web	
-  - docker push registry.heroku.com/payroll-server-bobadilla-stage/web	
-  - heroku container:release web --app=payroll-server-bobadilla-stage
+  - docker login -u $ORGANIZATION -p $DOCKER_PASSWORD
+  - docker tag payroll-server $ORGANIZATION/payroll-server:latest
+  - docker push $ORGANIZATION/payroll-server:latest
+  - curl https://cli-assets.heroku.com/install.sh | sh
+  - echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com
+  - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
+  - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
+  - heroku container:release web --app=$HEROKU_APP_STAGING
