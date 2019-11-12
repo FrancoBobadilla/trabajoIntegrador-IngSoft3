@@ -11,6 +11,17 @@ addons:
     organization: $ORGANIZATION
     token: $SONARCLOUD_TOKEN
 
+before_install:
+  - curl https://cli-assets.heroku.com/install.sh | sh
+  - echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin
+  - echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com
+
+install:
+  - cd codeceptjs-rest
+  - npm init -y
+  - npm install codeceptjs chai --save-dev
+  - cd ..
+
 script:
   - cd server
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
@@ -35,15 +46,19 @@ script:
          break
      fi
      done;
-  - cd ../codeceptjs-rest
-  - npm init -y
-  - npm install codeceptjs chai --save-dev
   - npx codeceptjs run --steps
-  - docker login -u $ORGANIZATION -p $DOCKER_PASSWORD
+
+deploy:
+  provider: script
+  script: 
   - docker tag payroll-server $ORGANIZATION/payroll-server:latest
   - docker push $ORGANIZATION/payroll-server:latest
-  - curl https://cli-assets.heroku.com/install.sh | sh
-  - echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com
   - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
   - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
   - heroku container:release web --app=$HEROKU_APP_STAGING
+  on:
+    branch: master
+
+
+
+
