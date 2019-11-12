@@ -18,11 +18,11 @@ script:
   - docker run -d -e "PORT=8080" -p 8080:8080 payroll-server
   - >
     export tries=0; 
-    export max_tries=20;
+    export max_tries=1;
     while [[ true ]]; do 
       tries=$((tries + 1));
       echo "esperando servicio... intento [$tries] de [$max_tries]"; 
-      sleep 5; 
+      sleep 2; 
       curl -G localhost:8080
       look_exit=$?; 
       if [[ "$look_exit" = "0" ]]; then echo "servicio disponible"; break; fi; 
