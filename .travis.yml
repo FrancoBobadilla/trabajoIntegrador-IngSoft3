@@ -25,3 +25,7 @@ script:
   - docker tag francobobadilla/payroll-server:latest registry.heroku.com/payroll-server-bobadilla/web
   - heroku container:push web --app=payroll-server-bobadilla
   - heroku container:release web --app=payroll-server-bobadilla
+  - cd ../codeceptjs-rest
+  - npm init -y
+  - npm install codeceptjs chai --save-dev
+  - npx codeceptjs run --steps
