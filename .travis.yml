@@ -46,5 +46,5 @@ script:
   - curl https://cli-assets.heroku.com/install.sh | sh	
   - echo b75a94b7-b267-4e0f-8457-f96df4caab68 | docker login -u_ --password-stdin registry.heroku.com	
   - docker tag francobobadilla/payroll-server:latest registry.heroku.com/payroll-server-bobadilla/web	
-  - heroku push registry.heroku.com/payroll-server-bobadilla/web	
+  - docker push registry.heroku.com/payroll-server-bobadilla/web	
   - heroku container:release web --app=payroll-server-bobadilla
