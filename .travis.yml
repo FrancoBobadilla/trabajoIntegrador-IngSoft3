@@ -14,22 +14,38 @@ addons:
 script:
   - cd server
   - mvn clean package spring-boot:repackage
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
   - docker build -t payroll-server .
   - docker run -d -e "PORT=8080" -p 8080:8080 payroll-server
   - >
     export tries=0; 
-    export max_tries=1;
+    export max_tries=20;
     while [[ true ]]; do 
       tries=$((tries + 1));
       echo "esperando servicio... intento [$tries] de [$max_tries]"; 
-      sleep 2; 
+      sleep 5; 
       curl -G localhost:8080
       look_exit=$?; 
-      if [[ "$look_exit" = "0" ]]; then echo "servicio disponible"; break; fi; 
+      if [[ "$look_exit" = "0" ]]
+         then echo "servicio disponible"
+         break
+      fi 
       if [[ "$tries" -ge "$max_tries" ]]
          then echo "límite de tiempo alcanzado"
          exit 1
          break
      fi
-    done;
-  - echo HOLI
+     done;
+  - cd ../codeceptjs-rest
+  - npm init -y
+  - npm install codeceptjs chai --save-dev
+  - npx codeceptjs run --steps
+  - docker login -u francobobadilla -p apich4594*
+  - docker tag payroll-server francobobadilla/payroll-server:latest
+  - docker push francobobadilla/payroll-server:latest
+  - curl https://cli-assets.heroku.com/install.sh | sh
+  - echo b75a94b7-b267-4e0f-8457-f96df4caab68 | docker login -u_ --password-stdin registry.heroku.com
+  - docker tag francobobadilla/payroll-server:latest registry.heroku.com/payroll-server-bobadilla/web
+  - heroku container:push web --app=payroll-server-bobadilla
+  - heroku container:release web --app=payroll-server-bobadilla
+

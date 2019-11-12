@@ -3,7 +3,7 @@ exports.config = {
 	output: "./output",
 	helpers: {
 		REST: {
-			endpoint: "https://payroll-server-bobadilla.herokuapp.com",
+			endpoint: "http://localhost:8080",
 			onRequest: () => {
 			}
 		}
