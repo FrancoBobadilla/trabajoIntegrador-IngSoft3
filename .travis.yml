@@ -32,7 +32,7 @@ jobs:
          && docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest
          && export tries=0;
          && export max_tries=12;
-         && > while [[ true ]]; do
+         && while [[ true ]]; do
            tries=$((tries + 1));
            echo "esperando servicio... intento [$tries] de [$max_tries]";
            sleep 5;
