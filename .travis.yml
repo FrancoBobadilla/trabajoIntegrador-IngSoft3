@@ -15,4 +15,4 @@ script:
   - cd server
   - mvn clean package spring-boot:repackage
   - docker build -t payroll-server .
-  - docker run -p 8080:8080 pay-ser
+  - docker run -p 8080:8080 payroll-server
