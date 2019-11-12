@@ -16,3 +16,16 @@ script:
   - mvn clean package spring-boot:repackage
   - docker build -t payroll-server .
   - docker run -e "PORT=8080" -p 8080:8080 payroll-server
+  - >
+    export tries=0; 
+    export max_tries=20;
+    while [[ true ]]; do 
+      tries=$((tries + 1));
+      echo "esperando servicio... intento [$tries] de [$max_tries]"; 
+      sleep 5; 
+      curl -G localhost:8080
+      look_exit=$?; 
+      if [[ "$look_exit" = "0" ]]; then echo "servicio disponible"; break; fi; 
+      if [[ "$tries" -ge "$max_tries" ]]; then echo "límite de tiempo alcanzado"; exit 1; break; fi;
+    done;
+  - echo HOLI
