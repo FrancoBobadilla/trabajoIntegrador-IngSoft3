@@ -26,6 +26,6 @@ script:
       curl -G localhost:8080
       look_exit=$?; 
       if [[ "$look_exit" = "0" ]]; then echo "servicio disponible"; break; fi; 
-      if [[ "$tries" -ge "$max_tries" ]]; then echo "límite de tiempo alcanzado"; exit 1; break; fi;
+      if [[ "$tries" -ge "$max_tries" ]]; then echo "límite de tiempo alcanzado"; break; exit 1; fi;
     done;
   - echo HOLI
