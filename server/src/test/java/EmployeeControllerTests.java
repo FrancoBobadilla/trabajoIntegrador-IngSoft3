@@ -69,7 +69,7 @@ public class EmployeeControllerTests extends AbstractTest {
 
 		given(repository.findAll()).willReturn( //
 		Arrays.asList( //
-				new Employee("Frodo1", "Baggins", "ring bearer"), //
+				new Employee("Frodo12", "Baggins", "ring bearer"), //
 				new Employee("Bilbo1", "Baggins", "burglar")));
 		
 		mvc.perform(get("/employees").accept(MediaTypes.HAL_JSON_VALUE))
