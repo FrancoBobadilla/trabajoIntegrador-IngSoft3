@@ -13,7 +13,6 @@ addons:
 
 script:
   - cd server
-  - mvn clean package spring-boot:repackage
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
   - docker build -t payroll-server .
   - docker run -d -e "PORT=8080" -p 8080:8080 payroll-server
