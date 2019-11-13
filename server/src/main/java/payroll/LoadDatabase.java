@@ -17,7 +17,7 @@ class LoadDatabase {
 			employeeRepository.save(new Employee("Bilbo", "Baggins", "burglar"));
 			employeeRepository.save(new Employee("Frodo", "Baggins", "thief"));
 
-			employeeRepository.findAll().forEach(employee -> {
+			employeeRepository.findAll().forEach(employee -> 
 				log.info("Preloaded " + employee);
 			);
 
@@ -29,6 +29,6 @@ class LoadDatabase {
 				log.info("Preloaded " + order);
 			);
 			// end::order[]
-		};
+		;
 	}
 }
