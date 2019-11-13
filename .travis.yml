@@ -56,5 +56,3 @@ deploy:
   - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
   - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
   - heroku container:release web --app=$HEROKU_APP_STAGING
-  on:
-    branch: master
