@@ -28,7 +28,7 @@ script:
     if [[ "$look_exit" = "1" ]]
       then echo "BUILD FALLIDO"
       exit 1
-    fi
+    fi;
     echo "BUILD EXITOSO"
 
   - echo "COMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER"
@@ -62,7 +62,7 @@ script:
     if [[ "$look_exit" = "1" ]]
       then echo "TEST DE INTEGRACION FALLIDO"
       exit 1
-    fi
+    fi;
     echo "TEST DE INTEGRACION EXITOSO"
 
   - echo "COMENZANDO SUBIDA A REGISTRY DE DOCKER Y HEROKU"
