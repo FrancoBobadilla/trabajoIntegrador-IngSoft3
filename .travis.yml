@@ -30,8 +30,8 @@ script:
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
     #
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]];
-      then echo -e "\e[1;31mBUILD FALLIDO";
+    if [[ "$look_exit" = "1" ]]; then # 
+      echo -e "\e[1;31mBUILD FALLIDO";
       exit 1;
     fi;
     echo -e "\e[1;32mBUILD EXITOSO";
@@ -46,8 +46,8 @@ script:
     docker build -t $ORGANIZATION/payroll-server:latest .;
     #
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]];
-      then echo -e "\e[1;31mCONSTRUCCION FALLIDA";
+    if [[ "$look_exit" = "1" ]]; then #
+      echo -e "\e[1;31mCONSTRUCCION FALLIDA";
       exit 1;
     fi;
     echo -e "\e[1;32mCONSTRUCCION EXITOSA";
@@ -69,12 +69,12 @@ script:
       sleep 5;
       curl -G localhost:$PORT;
       look_exit=$?;
-      if [[ "$look_exit" = "0" ]];
-        then echo "SERVICIO DISPONIBLE";
+      if [[ "$look_exit" = "0" ]]; then #
+        echo "SERVICIO DISPONIBLE";
         break;
       fi;
-      if [[ "$tries" -ge "$max_tries" ]];
-        then echo "LIMITE DE TIEMPO ALCANZADO";
+      if [[ "$tries" -ge "$max_tries" ]]; then #
+        echo "LIMITE DE TIEMPO ALCANZADO";
         exit 1;
         break;
       fi;
@@ -83,8 +83,8 @@ script:
     npx codeceptjs run --steps --reporter mocha-multi;
     #
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]]
-      then echo -e "\e[1;31mTEST DE INTEGRACION FALLIDO";
+    if [[ "$look_exit" = "1" ]]; then #
+      echo -e "\e[1;31mTEST DE INTEGRACION FALLIDO";
       exit 1;
     fi;
     echo -e "\e[1;32mTEST DE INTEGRACION EXITOSO";
@@ -100,8 +100,8 @@ script:
     docker push $ORGANIZATION/payroll-server:latest;
     #
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]];
-      then echo -e "\e[1;31mDESPLIEGUE A DOCKERHUB FALLIDO";
+    if [[ "$look_exit" = "1" ]]; then #
+      echo -e "\e[1;31mDESPLIEGUE A DOCKERHUB FALLIDO";
       exit 1;
     fi;
     echo -e "\e[1;32mDESPLIEGUE A DOCKERHUB EXITOSO";
@@ -118,8 +118,8 @@ script:
     docker push registry.heroku.com/$HEROKU_APP_STAGING/web;
     #
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]];
-      then echo -e "\e[1;31mDESPLIEGUE A HEROKU REGISTRY FALLIDO";
+    if [[ "$look_exit" = "1" ]]; then #
+      echo -e "\e[1;31mDESPLIEGUE A HEROKU REGISTRY FALLIDO";
       exit 1;
     fi;
     echo -e "\e[1;32mDESPLIEGUE A HEROKU REGISTRY EXITOSO";
@@ -134,8 +134,8 @@ script:
     heroku container:release web --app=$HEROKU_APP_STAGING; 
     #
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]];
-      then echo -e "\e[1;31mRELEASE DE HEROKU APP STAGING FALLIDO";
+    if [[ "$look_exit" = "1" ]]; then #
+      echo -e "\e[1;31mRELEASE DE HEROKU APP STAGING FALLIDO";
       exit 1;
     fi;
     echo -e "\e[1;32mRELEASE DE HEROKU APP STAGING EXITOSO";
