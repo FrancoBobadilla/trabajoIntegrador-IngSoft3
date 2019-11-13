@@ -27,7 +27,7 @@ script:
   - docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest
   - export tries=0;
   - export max_tries=12;
-  -> while [[ true ]]; do
+  - > while [[ true ]]; do
            tries=$((tries + 1));
            echo "esperando servicio... intento [$tries] de [$max_tries]";
            sleep 5;
@@ -45,7 +45,11 @@ script:
          done;
   - cd ../codeceptjs-rest
   - npx codeceptjs run --steps
-  - docker push $ORGANIZATION/payroll-server:latest
-  - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
-  - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
-  - heroku container:release web --app=$HEROKU_APP_STAGING
+
+deploy:
+  provider: script
+  script: 
+     - docker push $ORGANIZATION/payroll-server:latest
+     - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
+     - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
+     - heroku container:release web --app=$HEROKU_APP_STAGING
