@@ -27,7 +27,7 @@ script:
   - cd server
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
 
-after-success:
+after-script:
   - docker build -t $ORGANIZATION/payroll-server:latest .
   - docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest
   - >
