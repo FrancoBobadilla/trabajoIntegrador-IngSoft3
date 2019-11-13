@@ -30,7 +30,7 @@ script:
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\e[33mBUILD FALLIDO"
+      then echo -e "\e[31mBUILD FALLIDO"
       exit 1
     fi;
     echo "BUILD EXITOSO";
@@ -46,7 +46,7 @@ script:
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "CONSTRUCCION FALLIDA"
+      then echo -e "\e[31mCONSTRUCCION FALLIDA"
       exit 1
     fi;
     echo "CONSTRUCCION EXITOSA";
@@ -82,7 +82,7 @@ script:
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "TEST DE INTEGRACION FALLIDO"
+      then echo -e "\e[31mTEST DE INTEGRACION FALLIDO"
       exit 1
     fi;
     echo "TEST DE INTEGRACION EXITOSO";
@@ -99,7 +99,7 @@ script:
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "DESPLIEGUE A DOCKERHUB FALLIDO"
+      then echo -e "\e[31mDESPLIEGUE A DOCKERHUB FALLIDO"
       exit 1
     fi;
     echo "DESPLIEGUE A DOCKERHUB EXITOSO";
@@ -117,7 +117,7 @@ script:
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "DESPLIEGUE A HEROKU REGISTRY FALLIDO"
+      then echo -e "\e[31mDESPLIEGUE A HEROKU REGISTRY FALLIDO"
       exit 1
     fi;
     echo "DESPLIEGUE A HEROKU REGISTRY EXITOSO";
@@ -133,7 +133,7 @@ script:
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "RELEASE DE HEROKU APP STAGING FALLIDO"
+      then echo -e "\e[31mRELEASE DE HEROKU APP STAGING FALLIDO"
       exit 1
     fi;
     echo "RELEASE DE HEROKU APP STAGING EXITOSO";
