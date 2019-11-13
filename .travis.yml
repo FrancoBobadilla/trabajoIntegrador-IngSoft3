@@ -23,7 +23,7 @@ script:
 
   - > # CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR
 
-    echo "COMENZANDO BUILD";
+    echo -e "\e[1;33mCOMENZANDO BUILD";
 
     cd server;
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
@@ -40,7 +40,7 @@ script:
 
   - > # CONSTRUCCION DE IMAGEN DE DOCKER
 
-    echo "COMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER";
+    echo -e "\e[1;33mCOMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER";
 
     docker build -t $ORGANIZATION/payroll-server:latest .;
 
@@ -56,7 +56,7 @@ script:
 
   - > # TEST DE INTEGRACION
 
-    echo "COMENZANDO TEST DE INTEGRACION";
+    echo -e "\e[1;33mCOMENZANDO TEST DE INTEGRACION";
 
     docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest;
     export tries=0;
@@ -77,7 +77,7 @@ script:
         break
       fi
     done;
-    cd ../codeceptjs-rest;
+    cd ../codeceptjs-rest; # tener en cuenta que habiamos hecho un cd server
     npx codeceptjs run --steps --reporter mocha-multi;
 
     look_exit=$?;
@@ -92,7 +92,7 @@ script:
 
   - > # DESPLIEGUE A DOCKERHUB
 
-    echo "COMENZANDO DESPLIEGUE A DOCKERHUB";
+    echo -e "\e[1;33mCOMENZANDO DESPLIEGUE A DOCKERHUB";
 
     echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin;
     docker push $ORGANIZATION/payroll-server:latest;
@@ -109,7 +109,7 @@ script:
 
   - > # DESPLIEGUE A HEROKU REGISTRY
 
-    echo "COMENZANDO DESPLIEGUE A HEROKU REGISTRY";
+    echo -e "\e[1;33mCOMENZANDO DESPLIEGUE A HEROKU REGISTRY";
 
     echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com;
     docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web;
@@ -127,7 +127,7 @@ script:
 
   - > # RELEASE DE HEROKU APP STAGING
 
-    echo "COMENZANDO RELEASE DE HEROKU APP STAGING";
+    echo -e "\e[1;33mCOMENZANDO RELEASE DE HEROKU APP STAGING";
 
     heroku container:release web --app=$HEROKU_APP_STAGING; 
 
