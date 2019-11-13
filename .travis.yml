@@ -11,12 +11,8 @@ addons:
     organization: $ORGANIZATION
     token: $SONARCLOUD_TOKEN
 
-before_install:
-  - curl https://cli-assets.heroku.com/install.sh | sh
-  - echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin
-  - echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com
-
 install:
+  - curl https://cli-assets.heroku.com/install.sh | sh
   - cd codeceptjs-rest
   - npm init -y
   - npm install codeceptjs chai --save-dev
@@ -26,18 +22,20 @@ install:
 script:
   - cd server
   - >
+    echo "COMENZANDO BUILD"
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
-    look_exit=$?; 
-    echo $look_exit; 
+    look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "ERROR DE BUILD"
+      then echo "BUILD FALLIDO"
       exit 1
     fi
+    echo "BUILD EXITOSO"
 
-  - echo "CONSTRUCCION DE IMAGEN DE DOCKER"
+  - echo "COMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER"
   - docker build -t $ORGANIZATION/payroll-server:latest .
+  - echo "CONSTRUCCION EXITOSA"
 
-  - echo "TEST DE INTEGRACION"
+  - echo "COMENZANDO TEST DE INTEGRACION"
   - docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest
   - >
     export tries=0;
@@ -60,8 +58,11 @@ script:
     done;
   - cd ../codeceptjs-rest
   - npx codeceptjs run --steps --reporter mocha-multi
+  - echo "TEST DE INTEGRACION EXITOSO"
 
-  - echo "SUBIDA A REGISTRY DE DOCKER Y HEROKU"
+  - echo "COMENZANDO SUBIDA A REGISTRY DE DOCKER Y HEROKU"
+  - echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin
+  - echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com
   - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
   - docker push $ORGANIZATION/payroll-server:latest
   - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
