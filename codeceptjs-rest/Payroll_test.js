@@ -11,6 +11,6 @@ Scenario('Verificar a successful call', async () => {
 Scenario('Verificar empleado 1', async () => {
 	const res = await I.sendGetRequest('/employees/1');
 	console.log(res);
-	expect(res.data.firstName).to.eql('BilboO');
+	expect(res.data.firstName).to.eql('Bilbo');
 	expect(res.data.lastName).to.eql('Baggins');
 });

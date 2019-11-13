@@ -20,24 +20,28 @@ install:
   - cd ..
 
 script:
-  - cd server
-  - >
+
+  - > # CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR
     echo "COMENZANDO BUILD";
+    cd server;
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
       then echo "BUILD FALLIDO"
       exit 1
     fi;
-    echo "BUILD EXITOSO"
+    echo "BUILD EXITOSO";
 
-  - echo "COMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER"
-  - docker build -t $ORGANIZATION/payroll-server:latest .
-  - echo "CONSTRUCCION EXITOSA"
 
-  - echo "COMENZANDO TEST DE INTEGRACION"
-  - docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest
-  - >
+  - > # CONSTRUCCION DE IMAGEN DE DOCKER
+    echo "COMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER";
+    docker build -t $ORGANIZATION/payroll-server:latest .;
+    echo "CONSTRUCCION EXITOSA";
+
+
+  - > # TEST DE INTEGRACION
+    echo "COMENZANDO TEST DE INTEGRACION";
+    docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest;
     export tries=0;
     export max_tries=12;
     while [[ true ]]; do
@@ -63,12 +67,22 @@ script:
       then echo "TEST DE INTEGRACION FALLIDO"
       exit 1
     fi;
-    echo "TEST DE INTEGRACION EXITOSO"
+    echo "TEST DE INTEGRACION EXITOSO";
 
-  - echo "COMENZANDO SUBIDA A REGISTRY DE DOCKER Y HEROKU"
-  - echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin
-  - echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com
-  - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
-  - docker push $ORGANIZATION/payroll-server:latest
-  - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
-  - heroku container:release web --app=$HEROKU_APP_STAGING
+
+  - > # DESPLIEGUE A DOCKERHUB
+    echo "COMENZANDO DESPLIEGUE A DOCKERHUB";
+    echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin;
+    docker push $ORGANIZATION/payroll-server:latest;
+    echo "DESPLIEGUE A DOCKERHUB EXITOSO";
+
+
+  - > # DESPLIEGUE A HEROKU
+    echo "COMENZANDO DESPLIEGUE A HEROKU";
+    echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com;
+    docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web;
+    docker push registry.heroku.com/$HEROKU_APP_STAGING/web;
+    heroku container:release web --app=$HEROKU_APP_STAGING;
+    echo "DESPLIEGUE A HEROKU HEROKU";
+
+
