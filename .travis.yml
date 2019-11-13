@@ -11,45 +11,50 @@ addons:
     organization: $ORGANIZATION
     token: $SONARCLOUD_TOKEN
 
+before_install:
+  - curl https://cli-assets.heroku.com/install.sh | sh
+  - echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin
+  - echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com
+
 install:
   - cd codeceptjs-rest
   - npm init -y
   - npm install codeceptjs chai --save-dev
   - cd ..
-  - curl https://cli-assets.heroku.com/install.sh | sh
-  - echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin
-  - echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com
 
 script:
   - cd server
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
   - docker build -t $ORGANIZATION/payroll-server:latest .
   - docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest
-  - export tries=0;
-  - export max_tries=12;
-  - > while [[ true ]]; do
-           tries=$((tries + 1));
-           echo "esperando servicio... intento [$tries] de [$max_tries]";
-           sleep 5;
-           curl -G localhost:$PORT
-           look_exit=$?;
-           if [[ "$look_exit" = "0" ]]
-              then echo "servicio disponible"
-              break
-          fi
-          if [[ "$tries" -ge "$max_tries" ]]
-              then echo "límite de tiempo alcanzado"
-              exit 1
-              break
-          fi
-         done;
+  - >
+    export tries=0;
+    export max_tries=12;
+    while [[ true ]]; do
+      tries=$((tries + 1));
+      echo "esperando servicio... intento [$tries] de [$max_tries]";
+      sleep 5;
+      curl -G localhost:$PORT
+      look_exit=$?;
+      if [[ "$look_exit" = "0" ]]
+         then echo "servicio disponible"
+         break
+      fi
+      if [[ "$tries" -ge "$max_tries" ]]
+         then echo "límite de tiempo alcanzado"
+         exit 1
+         break
+     fi
+     done;
   - cd ../codeceptjs-rest
   - npx codeceptjs run --steps
 
 deploy:
   provider: script
-  script: 
-     - docker push $ORGANIZATION/payroll-server:latest
-     - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
-     - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
-     - heroku container:release web --app=$HEROKU_APP_STAGING
+  script:
+  - docker push $ORGANIZATION/payroll-server:latest
+  - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
+  - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
+  - heroku container:release web --app=$HEROKU_APP_STAGING
+  on:
+    branch: master
