@@ -31,10 +31,10 @@ script:
     #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]; then # 
-      echo -e "\e[1;33mBUILD FALLIDO";
+      echo "BUILD FALLIDO";
       exit 1;
     fi;
-    echo -e "\e[1;33mBUILD EXITOSO";
+    echo "BUILD EXITOSO";
 
 
 
