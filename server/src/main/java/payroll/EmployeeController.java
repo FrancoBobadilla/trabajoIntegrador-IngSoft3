@@ -25,15 +25,12 @@ class EmployeeController {
 	private final EmployeeRepository repository;
 
 	private final EmployeeResourceAssembler assembler;
-	private final OrderResourceAssembler orderAssembler;
 
 	EmployeeController(EmployeeRepository repository,
-					   EmployeeResourceAssembler assembler,
-					   OrderResourceAssembler orderAssembler) {
+					   EmployeeResourceAssembler assembler) {
 		
 		this.repository = repository;
 		this.assembler = assembler;
-		this.orderAssembler = orderAssembler;
 	}
 	// end::constructor[]
 
