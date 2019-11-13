@@ -45,11 +45,7 @@ script:
          done;
   - cd ../codeceptjs-rest
   - npx codeceptjs run --steps
-
-deploy:
-  provider: script
-  script: 
-     - docker push $ORGANIZATION/payroll-server:latest
-     - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
-     - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
-     - heroku container:release web --app=$HEROKU_APP_STAGING
+  - docker push $ORGANIZATION/payroll-server:latest
+  - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
+  - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
+  - heroku container:release web --app=$HEROKU_APP_STAGING
