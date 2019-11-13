@@ -21,18 +21,17 @@ install:
 
 script:
 
-
-  - > # BUILD
+  - > # CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR
 
     echo -e "\e[1;33mCOMENZANDO BUILD";
-    #
+
     cd server;
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
-    #
+
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]]; then # 
-      echo "BUILD FALLIDO";
-      exit 1;
+    if [[ "$look_exit" = "1" ]]
+      then echo -e "\e[33mBUILD FALLIDO"
+      exit 1
     fi;
     echo "BUILD EXITOSO";
 
@@ -42,15 +41,15 @@ script:
   - > # CONSTRUCCION DE IMAGEN DE DOCKER
 
     echo -e "\e[1;33mCOMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER";
-    #
+
     docker build -t $ORGANIZATION/payroll-server:latest .;
-    #
+
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]]; then #
-      echo -e "\e[1;33mCONSTRUCCION FALLIDA";
-      exit 1;
+    if [[ "$look_exit" = "1" ]]
+      then echo "CONSTRUCCION FALLIDA"
+      exit 1
     fi;
-    echo -e "\e[1;33mCONSTRUCCION EXITOSA";
+    echo "CONSTRUCCION EXITOSA";
 
 
 
@@ -58,36 +57,35 @@ script:
   - > # TEST DE INTEGRACION
 
     echo -e "\e[1;33mCOMENZANDO TEST DE INTEGRACION";
-    #
+
     docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest;
     export tries=0;
     export max_tries=12;
-    while [[ true ]];
-    do;
+    while [[ true ]]; do
       tries=$((tries + 1));
       echo "ESPERANDO SERVICIO... intento $tries de $max_tries";
       sleep 5;
-      curl -G localhost:$PORT;
+      curl -G localhost:$PORT
       look_exit=$?;
-      if [[ "$look_exit" = "0" ]]; then #
-        echo "SERVICIO DISPONIBLE";
-        break;
-      fi;
-      if [[ "$tries" -ge "$max_tries" ]]; then #
-        echo "LIMITE DE TIEMPO ALCANZADO";
-        exit 1;
-        break;
-      fi;
+      if [[ "$look_exit" = "0" ]]
+        then echo "SERVICIO DISPONIBLE"
+        break
+      fi
+      if [[ "$tries" -ge "$max_tries" ]]
+        then echo "LIMITE DE TIEMPO ALCANZADO"
+        exit 1
+        break
+      fi
     done;
-    cd ../codeceptjs-rest; 
+    cd ../codeceptjs-rest; # tener en cuenta que habiamos hecho un cd server
     npx codeceptjs run --steps --reporter mocha-multi;
-    #
+
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]]; then #
-      echo -e "\e[1;33mTEST DE INTEGRACION FALLIDO";
-      exit 1;
+    if [[ "$look_exit" = "1" ]]
+      then echo "TEST DE INTEGRACION FALLIDO"
+      exit 1
     fi;
-    echo -e "\e[1;33mTEST DE INTEGRACION EXITOSO";
+    echo "TEST DE INTEGRACION EXITOSO";
 
 
 
@@ -95,16 +93,16 @@ script:
   - > # DESPLIEGUE A DOCKERHUB
 
     echo -e "\e[1;33mCOMENZANDO DESPLIEGUE A DOCKERHUB";
-    #
+
     echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin;
     docker push $ORGANIZATION/payroll-server:latest;
-    #
+
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]]; then #
-      echo -e "\e[1;33mDESPLIEGUE A DOCKERHUB FALLIDO";
-      exit 1;
+    if [[ "$look_exit" = "1" ]]
+      then echo "DESPLIEGUE A DOCKERHUB FALLIDO"
+      exit 1
     fi;
-    echo -e "\e[1;33mDESPLIEGUE A DOCKERHUB EXITOSO";
+    echo "DESPLIEGUE A DOCKERHUB EXITOSO";
 
 
 
@@ -112,17 +110,17 @@ script:
   - > # DESPLIEGUE A HEROKU REGISTRY
 
     echo -e "\e[1;33mCOMENZANDO DESPLIEGUE A HEROKU REGISTRY";
-    #
+
     echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com;
     docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web;
     docker push registry.heroku.com/$HEROKU_APP_STAGING/web;
-    #
+
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]]; then #
-      echo -e "\e[1;33mDESPLIEGUE A HEROKU REGISTRY FALLIDO";
-      exit 1;
+    if [[ "$look_exit" = "1" ]]
+      then echo "DESPLIEGUE A HEROKU REGISTRY FALLIDO"
+      exit 1
     fi;
-    echo -e "\e[1;33mDESPLIEGUE A HEROKU REGISTRY EXITOSO";
+    echo "DESPLIEGUE A HEROKU REGISTRY EXITOSO";
 
 
 
@@ -130,14 +128,15 @@ script:
   - > # RELEASE DE HEROKU APP STAGING
 
     echo -e "\e[1;33mCOMENZANDO RELEASE DE HEROKU APP STAGING";
-    #
+
     heroku container:release web --app=$HEROKU_APP_STAGING; 
-    #
+
     look_exit=$?;
-    if [[ "$look_exit" = "1" ]]; then #
-      echo -e "\e[1;33mRELEASE DE HEROKU APP STAGING FALLIDO";
-      exit 1;
+    if [[ "$look_exit" = "1" ]]
+      then echo "RELEASE DE HEROKU APP STAGING FALLIDO"
+      exit 1
     fi;
-    echo -e "\e[1;33mRELEASE DE HEROKU APP STAGING EXITOSO";
+    echo "RELEASE DE HEROKU APP STAGING EXITOSO";
+
 
 
