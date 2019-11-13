@@ -21,19 +21,20 @@ install:
 
 script:
 
-  - > # CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR
+
+  - > # BUILD
 
     echo -e "\e[1;33mCOMENZANDO BUILD";
-
+    #
     cd server;
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
-
+    #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "BUILD FALLIDO"
+      then echo -e "\e[1;31mBUILD FALLIDO"
       exit 1
     fi;
-    echo "BUILD EXITOSO";
+    echo -e "\e[1;32mBUILD EXITOSO";
 
 
 
@@ -41,15 +42,15 @@ script:
   - > # CONSTRUCCION DE IMAGEN DE DOCKER
 
     echo -e "\e[1;33mCOMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER";
-
+    #
     docker build -t $ORGANIZATION/payroll-server:latest .;
-
+    #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "CONSTRUCCION FALLIDA"
+      then echo -e "\e[1;31mCONSTRUCCION FALLIDA"
       exit 1
     fi;
-    echo "CONSTRUCCION EXITOSA";
+    echo -e "\e[1;32mCONSTRUCCION EXITOSA";
 
 
 
@@ -57,7 +58,7 @@ script:
   - > # TEST DE INTEGRACION
 
     echo -e "\e[1;33mCOMENZANDO TEST DE INTEGRACION";
-
+    #
     docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest;
     export tries=0;
     export max_tries=12;
@@ -77,15 +78,15 @@ script:
         break
       fi
     done;
-    cd ../codeceptjs-rest; # tener en cuenta que habiamos hecho un cd server
+    cd ../codeceptjs-rest; 
     npx codeceptjs run --steps --reporter mocha-multi;
-
+    #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "TEST DE INTEGRACION FALLIDO"
+      then echo -e "\e[1;31mTEST DE INTEGRACION FALLIDO"
       exit 1
     fi;
-    echo "TEST DE INTEGRACION EXITOSO";
+    echo -e "\e[1;32mTEST DE INTEGRACION EXITOSO";
 
 
 
@@ -93,16 +94,16 @@ script:
   - > # DESPLIEGUE A DOCKERHUB
 
     echo -e "\e[1;33mCOMENZANDO DESPLIEGUE A DOCKERHUB";
-
+    #
     echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin;
     docker push $ORGANIZATION/payroll-server:latest;
-
+    #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "DESPLIEGUE A DOCKERHUB FALLIDO"
+      then echo -e "\e[1;31mDESPLIEGUE A DOCKERHUB FALLIDO"
       exit 1
     fi;
-    echo "DESPLIEGUE A DOCKERHUB EXITOSO";
+    echo -e "\e[1;32mDESPLIEGUE A DOCKERHUB EXITOSO";
 
 
 
@@ -110,17 +111,17 @@ script:
   - > # DESPLIEGUE A HEROKU REGISTRY
 
     echo -e "\e[1;33mCOMENZANDO DESPLIEGUE A HEROKU REGISTRY";
-
+    #
     echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com;
     docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web;
     docker push registry.heroku.com/$HEROKU_APP_STAGING/web;
-
+    #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "DESPLIEGUE A HEROKU REGISTRY FALLIDO"
+      then echo -e "\e[1;31mDESPLIEGUE A HEROKU REGISTRY FALLIDO"
       exit 1
     fi;
-    echo "DESPLIEGUE A HEROKU REGISTRY EXITOSO";
+    echo -e "\e[1;32mDESPLIEGUE A HEROKU REGISTRY EXITOSO";
 
 
 
@@ -128,14 +129,14 @@ script:
   - > # RELEASE DE HEROKU APP STAGING
 
     echo -e "\e[1;33mCOMENZANDO RELEASE DE HEROKU APP STAGING";
-
+    #
     heroku container:release web --app=$HEROKU_APP_STAGING; 
-
+    #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo "RELEASE DE HEROKU APP STAGING FALLIDO"
+      then echo -e "\e[1;31mRELEASE DE HEROKU APP STAGING FALLIDO"
       exit 1
     fi;
-    echo "RELEASE DE HEROKU APP STAGING EXITOSO";
+    echo -e "\e[1;32mRELEASE DE HEROKU APP STAGING EXITOSO";
 
 
