@@ -31,10 +31,10 @@ script:
     #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]; then # 
-      echo -e "\e[1;31mBUILD FALLIDO";
+      echo -e "\e[1;33mBUILD FALLIDO";
       exit 1;
     fi;
-    echo -e "\e[1;32mBUILD EXITOSO";
+    echo -e "\e[1;33mBUILD EXITOSO";
 
 
 
@@ -47,10 +47,10 @@ script:
     #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]; then #
-      echo -e "\e[1;31mCONSTRUCCION FALLIDA";
+      echo -e "\e[1;33mCONSTRUCCION FALLIDA";
       exit 1;
     fi;
-    echo -e "\e[1;32mCONSTRUCCION EXITOSA";
+    echo -e "\e[1;33mCONSTRUCCION EXITOSA";
 
 
 
@@ -84,10 +84,10 @@ script:
     #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]; then #
-      echo -e "\e[1;31mTEST DE INTEGRACION FALLIDO";
+      echo -e "\e[1;33mTEST DE INTEGRACION FALLIDO";
       exit 1;
     fi;
-    echo -e "\e[1;32mTEST DE INTEGRACION EXITOSO";
+    echo -e "\e[1;33mTEST DE INTEGRACION EXITOSO";
 
 
 
@@ -101,10 +101,10 @@ script:
     #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]; then #
-      echo -e "\e[1;31mDESPLIEGUE A DOCKERHUB FALLIDO";
+      echo -e "\e[1;33mDESPLIEGUE A DOCKERHUB FALLIDO";
       exit 1;
     fi;
-    echo -e "\e[1;32mDESPLIEGUE A DOCKERHUB EXITOSO";
+    echo -e "\e[1;33mDESPLIEGUE A DOCKERHUB EXITOSO";
 
 
 
@@ -119,10 +119,10 @@ script:
     #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]; then #
-      echo -e "\e[1;31mDESPLIEGUE A HEROKU REGISTRY FALLIDO";
+      echo -e "\e[1;33mDESPLIEGUE A HEROKU REGISTRY FALLIDO";
       exit 1;
     fi;
-    echo -e "\e[1;32mDESPLIEGUE A HEROKU REGISTRY EXITOSO";
+    echo -e "\e[1;33mDESPLIEGUE A HEROKU REGISTRY EXITOSO";
 
 
 
@@ -135,9 +135,9 @@ script:
     #
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]; then #
-      echo -e "\e[1;31mRELEASE DE HEROKU APP STAGING FALLIDO";
+      echo -e "\e[1;33mRELEASE DE HEROKU APP STAGING FALLIDO";
       exit 1;
     fi;
-    echo -e "\e[1;32mRELEASE DE HEROKU APP STAGING EXITOSO";
+    echo -e "\e[1;33mRELEASE DE HEROKU APP STAGING EXITOSO";
 
 
