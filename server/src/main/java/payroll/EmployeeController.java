@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,7 +49,7 @@ class EmployeeController {
 	}
 
 	@PostMapping("/employees")
-	public ResponseEntity<Employee> newEmployee(@RequestBody Employee newEmployee) throws URISyntaxException {
+	public ResponseEntity<ResourceSupport> newEmployee(@RequestBody Employee newEmployee) throws URISyntaxException {
 
 		Resource<Employee> resource = assembler.toResource(repository.save(newEmployee));
 
@@ -69,7 +70,7 @@ class EmployeeController {
 	}
 
 	@PutMapping("/employees/{id}")
-	public ResponseEntity<Employee> replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) throws URISyntaxException {
+	public ResponseEntity<ResourceSupport> replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) throws URISyntaxException {
 
 		Employee updatedEmployee = repository.findById(id)
 			.map(employee -> {
@@ -90,7 +91,7 @@ class EmployeeController {
 	}
 
 	@DeleteMapping("/employees/{id}")
-	public ResponseEntity<Employee> deleteEmployee(@PathVariable Long id) {
+	public ResponseEntity<ResourceSupport> deleteEmployee(@PathVariable Long id) {
 
 		repository.deleteById(id);
 		
