@@ -81,6 +81,7 @@ script:
     npx codeceptjs run --steps --reporter mocha-multi;
 
     look_exit=$?;
+    cat output/result.xml;
     if [[ "$look_exit" = "1" ]]
       then echo -e "\e[31mTEST DE INTEGRACION FALLIDO"
       exit 1

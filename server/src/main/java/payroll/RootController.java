@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 class RootController {
 
 	@GetMapping
-	ResourceSupport index() {
+	public ResourceSupport index() {
 		ResourceSupport rootResource = new ResourceSupport();
 		rootResource.add(linkTo(methodOn(EmployeeController.class).all()).withRel("employees"));
 		rootResource.add(linkTo(methodOn(OrderController.class).all()).withRel("orders"));

@@ -34,7 +34,7 @@ class OrderController {
 	}
 
 	@GetMapping("/orders")
-	Resources<Resource<Order>> all() {
+	public Resources<Resource<Order>> all() {
 
 		List<Resource<Order>> orders = orderRepository.findAll().stream()
 			.map(assembler::toResource)
@@ -45,14 +45,14 @@ class OrderController {
 	}
 
 	@GetMapping("/orders/{id}")
-	Resource<Order> one(@PathVariable Long id) {
+	public Resource<Order> one(@PathVariable Long id) {
 		return assembler.toResource(
 			orderRepository.findById(id)
 				.orElseThrow(() -> new OrderNotFoundException(id)));
 	}
 
 	@PostMapping("/orders")
-	ResponseEntity<Resource<Order>> newOrder(@RequestBody Order order) {
+	public ResponseEntity<Resource<Order>> newOrder(@RequestBody Order order) {
 
 		order.setStatus(Status.IN_PROGRESS);
 		Order newOrder = orderRepository.save(order);
@@ -65,7 +65,7 @@ class OrderController {
 	
 	// tag::delete[]
 	@DeleteMapping("/orders/{id}/cancel")
-	ResponseEntity<ResourceSupport> cancel(@PathVariable Long id) {
+	public ResponseEntity<ResourceSupport> cancel(@PathVariable Long id) {
 
 		Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
 
@@ -82,7 +82,7 @@ class OrderController {
 
 	// tag::complete[]
 	@PutMapping("/orders/{id}/complete")
-	ResponseEntity<ResourceSupport> complete(@PathVariable Long id) {
+	public ResponseEntity<ResourceSupport> complete(@PathVariable Long id) {
 		
 			Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
 

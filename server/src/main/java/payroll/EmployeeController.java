@@ -37,7 +37,7 @@ class EmployeeController {
 	// Aggregate root
 
 	@GetMapping("/employees")
-	Resources<Resource<Employee>> all() {
+	public Resources<Resource<Employee>> all() {
 
 		List<Resource<Employee>> employees = repository.findAll().stream()
 			.map(assembler::toResource)
@@ -48,7 +48,7 @@ class EmployeeController {
 	}
 
 	@PostMapping("/employees")
-	ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee) throws URISyntaxException {
+	public ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee) throws URISyntaxException {
 
 		Resource<Employee> resource = assembler.toResource(repository.save(newEmployee));
 
@@ -60,7 +60,7 @@ class EmployeeController {
 	// Single item
 
 	@GetMapping("/employees/{id}")
-	Resource<Employee> one(@PathVariable Long id) {
+	public Resource<Employee> one(@PathVariable Long id) {
 
 		Employee employee = repository.findById(id)
 			.orElseThrow(() -> new EmployeeNotFoundException(id));
@@ -69,7 +69,7 @@ class EmployeeController {
 	}
 
 	@PutMapping("/employees/{id}")
-	ResponseEntity<?> replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) throws URISyntaxException {
+	public ResponseEntity<?> replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) throws URISyntaxException {
 
 		Employee updatedEmployee = repository.findById(id)
 			.map(employee -> {
@@ -90,7 +90,7 @@ class EmployeeController {
 	}
 
 	@DeleteMapping("/employees/{id}")
-	ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
+	public ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
 
 		repository.deleteById(id);
 		
