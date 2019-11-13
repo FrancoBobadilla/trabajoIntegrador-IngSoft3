@@ -49,8 +49,6 @@ script:
     done;
   - cd ../codeceptjs-rest
   - npx codeceptjs run --steps --reporter mocha-multi
-  - cat output/result.xml
-  - cat output/console.log
   - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
   - docker push $ORGANIZATION/payroll-server:latest
   - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
