@@ -23,11 +23,11 @@ install:
   - npm install mocha-junit-reporter mocha-multi --save
   - cd ..
 
-before-script:
+script:
   - cd server
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
 
-script:
+after-success:
   - docker build -t $ORGANIZATION/payroll-server:latest .
   - docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest
   - >
