@@ -77,7 +77,7 @@ script:
         break
       fi
     done;
-    cd ../codeceptjs-rest; # tener en cuenta que habiamos hecho un cd server
+    cd ../codeceptjs-rest;
     npx codeceptjs run --steps --reporter mocha-multi;
 
     look_exit=$?;

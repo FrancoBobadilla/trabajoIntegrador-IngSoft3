@@ -9,6 +9,6 @@ public class EmployeeTests {
     @Test
     public void TestBasic() {
     	Employee alex = new Employee("franco", "bobadilla", "test");
-    	assertEquals(alex.getName(), "franco bobadilla");
+    	assertEquals("franco bobadilla", alex.getName());
     }
 }

@@ -48,7 +48,7 @@ class EmployeeController {
 	}
 
 	@PostMapping("/employees")
-	public ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee) throws URISyntaxException {
+	public ResponseEntity<Employee> newEmployee(@RequestBody Employee newEmployee) throws URISyntaxException {
 
 		Resource<Employee> resource = assembler.toResource(repository.save(newEmployee));
 
@@ -69,7 +69,7 @@ class EmployeeController {
 	}
 
 	@PutMapping("/employees/{id}")
-	public ResponseEntity<?> replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) throws URISyntaxException {
+	public ResponseEntity<Employee> replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) throws URISyntaxException {
 
 		Employee updatedEmployee = repository.findById(id)
 			.map(employee -> {
@@ -90,7 +90,7 @@ class EmployeeController {
 	}
 
 	@DeleteMapping("/employees/{id}")
-	public ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
+	public ResponseEntity<Employee> deleteEmployee(@PathVariable Long id) {
 
 		repository.deleteById(id);
 		
