@@ -48,6 +48,7 @@ script:
      done;
   - cd ../codeceptjs-rest
   - npx codeceptjs run --steps
+  - cd ..
 
 deploy:
   provider: script
