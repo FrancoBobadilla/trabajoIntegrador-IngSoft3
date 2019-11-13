@@ -23,7 +23,7 @@ script:
 
   - > # CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR
 
-    echo -e "\e[1;33mCOMENZANDO BUILD";
+    echo -e "\e[33mCOMENZANDO BUILD";
 
     cd server;
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
@@ -33,14 +33,14 @@ script:
       then echo -e "\e[31mBUILD FALLIDO"
       exit 1
     fi;
-    echo "BUILD EXITOSO";
+    echo -e "\e[32mBUILD EXITOSO";
 
 
 
 
   - > # CONSTRUCCION DE IMAGEN DE DOCKER
 
-    echo -e "\e[1;33mCOMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER";
+    echo -e "\e[33mCOMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER";
 
     docker build -t $ORGANIZATION/payroll-server:latest .;
 
@@ -49,14 +49,14 @@ script:
       then echo -e "\e[31mCONSTRUCCION FALLIDA"
       exit 1
     fi;
-    echo "CONSTRUCCION EXITOSA";
+    echo -e "\e[32mCONSTRUCCION EXITOSA";
 
 
 
 
   - > # TEST DE INTEGRACION
 
-    echo -e "\e[1;33mCOMENZANDO TEST DE INTEGRACION";
+    echo -e "\e[33mCOMENZANDO TEST DE INTEGRACION";
 
     docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest;
     export tries=0;
@@ -85,14 +85,14 @@ script:
       then echo -e "\e[31mTEST DE INTEGRACION FALLIDO"
       exit 1
     fi;
-    echo "TEST DE INTEGRACION EXITOSO";
+    echo -e "\e[32mTEST DE INTEGRACION EXITOSO";
 
 
 
 
   - > # DESPLIEGUE A DOCKERHUB
 
-    echo -e "\e[1;33mCOMENZANDO DESPLIEGUE A DOCKERHUB";
+    echo -e "\e[33mCOMENZANDO DESPLIEGUE A DOCKERHUB";
 
     echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin;
     docker push $ORGANIZATION/payroll-server:latest;
@@ -102,14 +102,14 @@ script:
       then echo -e "\e[31mDESPLIEGUE A DOCKERHUB FALLIDO"
       exit 1
     fi;
-    echo "DESPLIEGUE A DOCKERHUB EXITOSO";
+    echo -e "\e[32mDESPLIEGUE A DOCKERHUB EXITOSO";
 
 
 
 
   - > # DESPLIEGUE A HEROKU REGISTRY
 
-    echo -e "\e[1;33mCOMENZANDO DESPLIEGUE A HEROKU REGISTRY";
+    echo -e "\e[33mCOMENZANDO DESPLIEGUE A HEROKU REGISTRY";
 
     echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com;
     docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web;
@@ -120,14 +120,14 @@ script:
       then echo -e "\e[31mDESPLIEGUE A HEROKU REGISTRY FALLIDO"
       exit 1
     fi;
-    echo "DESPLIEGUE A HEROKU REGISTRY EXITOSO";
+    echo -e "\e[32mDESPLIEGUE A HEROKU REGISTRY EXITOSO";
 
 
 
 
   - > # RELEASE DE HEROKU APP STAGING
 
-    echo -e "\e[1;33mCOMENZANDO RELEASE DE HEROKU APP STAGING";
+    echo -e "\e[33mCOMENZANDO RELEASE DE HEROKU APP STAGING";
 
     heroku container:release web --app=$HEROKU_APP_STAGING; 
 
@@ -136,7 +136,7 @@ script:
       then echo -e "\e[31mRELEASE DE HEROKU APP STAGING FALLIDO"
       exit 1
     fi;
-    echo "RELEASE DE HEROKU APP STAGING EXITOSO";
+    echo -e "\e[32mRELEASE DE HEROKU APP STAGING EXITOSO";
 
 
 
