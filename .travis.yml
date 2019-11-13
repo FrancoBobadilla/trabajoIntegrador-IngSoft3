@@ -26,31 +26,38 @@ install:
 script:
   - cd server
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
-
-after-script:
+  - look_exit=$?;
+  - >
+    if [[ "$look_exit" = "1" ]]
+      then echo "ERROR DE BUILD"
+      exit 1
+    fi
+  - echo "CONSTRUCCION DE IMAGEN DE DOCKER"
   - docker build -t $ORGANIZATION/payroll-server:latest .
+  - echo "TEST DE INTEGRACION"
   - docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest
   - >
     export tries=0;
     export max_tries=12;
     while [[ true ]]; do
       tries=$((tries + 1));
-      echo "esperando servicio... intento [$tries] de [$max_tries]";
+      echo "ESPERANDO SERVICIO... intento $tries de $max_tries";
       sleep 5;
       curl -G localhost:$PORT
       look_exit=$?;
       if [[ "$look_exit" = "0" ]]
-        then echo "servicio disponible"
+        then echo "SERVICIO DISPONIBLE"
         break
       fi
       if [[ "$tries" -ge "$max_tries" ]]
-        then echo "límite de tiempo alcanzado"
+        then echo "LIMITE DE TIEMPO ALCANZADO"
         exit 1
         break
-    fi
+      fi
     done;
   - cd ../codeceptjs-rest
   - npx codeceptjs run --steps --reporter mocha-multi
+  - echo "SUBIDA A REGISTRY DE DOCKER Y HEROKU"
   - docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web
   - docker push $ORGANIZATION/payroll-server:latest
   - docker push registry.heroku.com/$HEROKU_APP_STAGING/web
