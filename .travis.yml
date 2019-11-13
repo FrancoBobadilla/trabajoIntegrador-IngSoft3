@@ -26,8 +26,9 @@ install:
 script:
   - cd server
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
-  - look_exit=$?;
   - >
+    look_exit=$?;
+    echo $look_exit
     if [[ "$look_exit" = "1" ]]
       then echo "ERROR DE BUILD"
       exit 1
