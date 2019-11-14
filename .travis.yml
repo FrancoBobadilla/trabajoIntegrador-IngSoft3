@@ -3,6 +3,21 @@ language: java
 jdk:
   - openjdk11
 
+services:
+  - docker
+
+addons:
+  sonarcloud:
+    organization: $ORGANIZATION
+    token: $SONARCLOUD_TOKEN
+
+install:
+  - curl https://cli-assets.heroku.com/install.sh | sh
+  - cd codeceptjs-rest
+  - npm init -y
+  - npm install codeceptjs chai --save-dev
+  - npm install mocha-junit-reporter mocha-multi --save
+  - cd ..
 
 script:
 
@@ -13,7 +28,7 @@ script:
     export totalSteps=6;
     export stepName=(ignore);
 
-    export stepName[1]="CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR";
+    stepName[1]="CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR";
     stepName[2]="CONSTRUCCION DE IMAGEN DE DOCKER";
     stepName[3]="TEST DE INTEGRACION";
     stepName[4]="DESPLIEGUE A DOCKERHUB";
@@ -37,5 +52,88 @@ script:
   - > # CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR
 
     stepInit;
+
+    cd server;
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
+
+    stepFinish $?;
+
+
+
+
+  - > # CONSTRUCCION DE IMAGEN DE DOCKER
+
+    stepInit;
+
+    docker build -t $ORGANIZATION/payroll-server:latest .;
+
+    stepFinish $?;
+
+
+
+
+  - > # TEST DE INTEGRACION
+
+    stepInit;
+
+    docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest;
+    export tries=0;
+    export max_tries=12;
+    while [[ true ]]; do
+      tries=$((tries + 1));
+      echo "ESPERANDO SERVICIO... intento $tries de $max_tries";
+      sleep 5;
+      curl -G localhost:$PORT
+      look_exit=$?;
+      if [[ "$look_exit" = "0" ]]
+        then echo -e "\nSERVICIO DISPONIBLE\n"
+        break
+      fi
+      if [[ "$tries" -ge "$max_tries" ]]
+        then echo -e "\nLIMITE DE TIEMPO ALCANZADO\n"
+        exit 1
+        break
+      fi
+    done;
+    cd ../codeceptjs-rest;
+    npx codeceptjs run --steps --reporter mocha-multi && cat output/result.xml;
+
+    stepFinish $?;
+
+
+
+
+  - > # DESPLIEGUE A DOCKERHUB
+
+    stepInit;
+
+    echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin;
+    docker push $ORGANIZATION/payroll-server:latest;
+
+    stepFinish $?;
+
+
+
+
+  - > # DESPLIEGUE A HEROKU REGISTRY
+
+    stepInit;
+
+    echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com;
+    docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web;
+    docker push registry.heroku.com/$HEROKU_APP_STAGING/web;
+
+    stepFinish $?;
+
+
+
+
+  - > # RELEASE DE HEROKU APP STAGING
+
+    stepInit;
+
+    heroku container:release web --app=$HEROKU_APP_STAGING; 
+
+    stepFinish $?;
+
 
