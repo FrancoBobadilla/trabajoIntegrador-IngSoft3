@@ -68,11 +68,11 @@ script:
       curl -G localhost:$PORT
       look_exit=$?;
       if [[ "$look_exit" = "0" ]]
-        then echo "\nSERVICIO DISPONIBLE\n"
+        then echo -e "\nSERVICIO DISPONIBLE\n"
         break
       fi
       if [[ "$tries" -ge "$max_tries" ]]
-        then echo "\nLIMITE DE TIEMPO ALCANZADO\n"
+        then echo -e "\nLIMITE DE TIEMPO ALCANZADO\n"
         exit 1
         break
       fi
@@ -86,7 +86,7 @@ script:
       then echo -e "\n\033[1m\e[31m ----- TEST DE INTEGRACION FALLIDO ----- \n\n\n\n"
       exit 1
     fi;
-    echo -e "\n\033[1m\e[32m ----- TEST DE INTEGRACION EXITOSO ----- \n\n\n\n";
+    echo -e "\n\n\033[1m\e[32m ----- TEST DE INTEGRACION EXITOSO ----- \n\n\n\n";
 
 
 
