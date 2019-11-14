@@ -41,12 +41,6 @@ script:
       echo -e "\nA${stepName[$step]}";
       echo -e "\nB$stepName[$step]";
       echo -e "\nG${stepName[@]}";
-      echo -e "\nF${stepName[echo $step]}";
-      echo -e "\nE$stepName[echo -e $step]";
-      echo -e "\nD${stepName[echo -e $step]}";
-
-
-
     };
 
     stepFinish () {
