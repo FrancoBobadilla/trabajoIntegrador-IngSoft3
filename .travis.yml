@@ -23,40 +23,40 @@ script:
 
   - > # CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR
 
-    echo -e "\n\n\n\n\e[33mCOMENZANDO BUILD\n";
+    echo -e "\n\n\n\n\033[1m\e[33m ----- COMENZANDO BUILD ----- \n";
 
     cd server;
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\n\e[31mBUILD FALLIDO\n\n\n\n"
+      then echo -e "\n\033[1m\e[31m ----- BUILD FALLIDO ----- \n\n\n\n"
       exit 1
     fi;
-    echo -e "\n\e[32mBUILD EXITOSO\n\n\n\n";
+    echo -e "\n\033[1m\e[32m ----- BUILD EXITOSO ----- \n\n\n\n";
 
 
 
 
   - > # CONSTRUCCION DE IMAGEN DE DOCKER
 
-    echo -e "\n\n\n\n\e[33mCOMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER\n";
+    echo -e "\n\n\n\n\033[1m\e[33m ----- COMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER ----- \n";
 
     docker build -t $ORGANIZATION/payroll-server:latest .;
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\n\e[31mCONSTRUCCION FALLIDA\n\n\n\n"
+      then echo -e "\n\033[1m\e[31m ----- CONSTRUCCION FALLIDA ----- \n\n\n\n"
       exit 1
     fi;
-    echo -e "\n\e[32mCONSTRUCCION EXITOSA\n\n\n\n";
+    echo -e "\n\033[1m\e[32m ----- CONSTRUCCION EXITOSA ----- \n\n\n\n";
 
 
 
 
   - > # TEST DE INTEGRACION
 
-    echo -e "\n\n\n\n\e[33mCOMENZANDO TEST DE INTEGRACION\n";
+    echo -e "\n\n\n\n\033[1m\e[33m ----- COMENZANDO TEST DE INTEGRACION ----- \n";
 
     docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest;
     export tries=0;
@@ -83,34 +83,34 @@ script:
     look_exit=$?;
     cat output/result.xml;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\n\e[31mTEST DE INTEGRACION FALLIDO\n\n\n\n"
+      then echo -e "\n\033[1m\e[31m ----- TEST DE INTEGRACION FALLIDO ----- \n\n\n\n"
       exit 1
     fi;
-    echo -e "\n\e[32mTEST DE INTEGRACION EXITOSO\n\n\n\n";
+    echo -e "\n\033[1m\e[32m ----- TEST DE INTEGRACION EXITOSO ----- \n\n\n\n";
 
 
 
 
   - > # DESPLIEGUE A DOCKERHUB
 
-    echo -e "\n\n\n\n\e[33mCOMENZANDO DESPLIEGUE A DOCKERHUB\n";
+    echo -e "\n\n\n\n\033[1m\e[33m ----- COMENZANDO DESPLIEGUE A DOCKERHUB ----- \n";
 
     echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin;
     docker push $ORGANIZATION/payroll-server:latest;
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\n\e[31mDESPLIEGUE A DOCKERHUB FALLIDO\n\n\n\n"
+      then echo -e "\n\033[1m\e[31m ----- DESPLIEGUE A DOCKERHUB FALLIDO ----- \n\n\n\n"
       exit 1
     fi;
-    echo -e "\n\e[32mDESPLIEGUE A DOCKERHUB EXITOSO\n\n\n\n";
+    echo -e "\n\033[1m\e[32m ----- DESPLIEGUE A DOCKERHUB EXITOSO ----- \n\n\n\n";
 
 
 
 
   - > # DESPLIEGUE A HEROKU REGISTRY
 
-    echo -e "\n\n\n\n\e[33mCOMENZANDO DESPLIEGUE A HEROKU REGISTRY";
+    echo -e "\n\n\n\n\033[1m\e[33m ----- COMENZANDO DESPLIEGUE A HEROKU REGISTRY ----- \n";
 
     echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com;
     docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web;
@@ -118,26 +118,26 @@ script:
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\e[31mDESPLIEGUE A HEROKU REGISTRY FALLIDO\n\n\n\n"
+      then echo -e "\n\033[1m\e[31m ----- DESPLIEGUE A HEROKU REGISTRY FALLIDO ----- \n\n\n\n"
       exit 1
     fi;
-    echo -e "\e[32mDESPLIEGUE A HEROKU REGISTRY EXITOSO\n\n\n\n";
+    echo -e "\n\033[1m\e[32m ----- DESPLIEGUE A HEROKU REGISTRY EXITOSO ----- \n\n\n\n";
 
 
 
 
   - > # RELEASE DE HEROKU APP STAGING
 
-    echo -e "\n\n\n\n\e[33mCOMENZANDO RELEASE DE HEROKU APP STAGING";
+    echo -e "\n\n\n\n\033[1m\e[33m ----- COMENZANDO RELEASE DE HEROKU APP STAGING ----- \n";
 
     heroku container:release web --app=$HEROKU_APP_STAGING; 
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\e[31mRELEASE DE HEROKU APP STAGING FALLIDO\n\n\n\n"
+      then echo -e "\n\033[1m\e[31m ----- RELEASE DE HEROKU APP STAGING FALLIDO ----- \n\n\n\n"
       exit 1
     fi;
-    echo -e "\e[32mRELEASE DE HEROKU APP STAGING EXITOSO\n\n\n\n";
+    echo -e "\n\033[1m\e[32m ----- RELEASE DE HEROKU APP STAGING EXITOSO ----- \n\n\n\n";
 
 
 
