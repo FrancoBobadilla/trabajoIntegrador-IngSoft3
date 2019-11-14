@@ -17,7 +17,9 @@ import org.springframework.web.context.WebApplicationContext;
 public abstract class AbstractTest {
 	protected MockMvc mvc;
 	
-	@MockBean protected EmployeeRepository repository;
+	@MockBean protected EmployeeRepository employeeRepository;
+
+	@MockBean protected OrderRepository orderRepository;
 	
 	@Autowired
 	WebApplicationContext webApplicationContext;

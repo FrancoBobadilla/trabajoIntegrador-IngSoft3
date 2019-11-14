@@ -67,7 +67,7 @@ public class EmployeeControllerTests extends AbstractTest {
 	@Test
 	public void getEmployees_Test_3() throws Exception {
 
-		given(repository.findAll()).willReturn( //
+		given(employeeRepository.findAll()).willReturn( //
 		Arrays.asList( //
 				new Employee("Frodo1", "Baggins", "ring bearer"), //
 				new Employee("Bilbo1", "Baggins", "burglar")));

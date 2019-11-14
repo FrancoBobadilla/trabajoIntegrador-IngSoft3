@@ -8,7 +8,8 @@ public class EmployeeTests {
 
     @Test
     public void TestBasic() {
-    	Employee alex = new Employee("franco", "bobadilla", "test");
-    	assertEquals("franco bobadilla", alex.getName());
+    	Employee franco = new Employee("Franco", "Bobadilla", "CEO");
+	franco.setName("Franco_José Bobadilla");
+    	assertEquals("Franco_José Bobadilla", franco.getName());
     }
 }
