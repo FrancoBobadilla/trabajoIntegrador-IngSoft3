@@ -28,25 +28,6 @@ script:
     export totalSteps=6;
     export stepName=(ignore);
 
-    stepName[1]="CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR";
-    stepName[2]="CONSTRUCCION DE IMAGEN DE DOCKER";
-    stepName[3]="TEST DE INTEGRACION";
-    stepName[4]="DESPLIEGUE A DOCKERHUB";
-    stepName[5]="DESPLIEGUE A HEROKU REGISTRY";
-    stepName[6]="RELEASE DE HEROKU APP STAGING";
-
-#   stepInit () {
-#      step=$((step + 1));
-#      echo -e "\n\n\n\n\033[1m\e[33m ----- PASO $step DE $totalSteps INICIADO - ${stepName[$step]} ----- \n";
-#    };
-#
-#   stepFinish () {
-#     if [[ "$1" = "1" ]]
-#       then echo -e "\n\033[1m\e[31m ----- PASO $step DE $totalSteps FALLIDO - ${stepName[$step]} ----- \n\n\n\n"
-#       exit 1
-#     fi;
-#     echo -e "\n\033[1m\e[32m ----- PASO $step DE $totalSteps EXITOSO - ${stepName[$step]} ----- \n\n\n\n";
-#   };
 
 
 
