@@ -28,7 +28,7 @@ script:
     export totalSteps=6;
     export stepName=(ignore);
 
-    stepName[1]="CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR";
+    export stepName[1]="CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR";
     stepName[2]="CONSTRUCCION DE IMAGEN DE DOCKER";
     stepName[3]="TEST DE INTEGRACION";
     stepName[4]="DESPLIEGUE A DOCKERHUB";
@@ -40,10 +40,13 @@ script:
       echo -e "\n\n\n\n\033[1m\e[33m ----- PASO $step DE $totalSteps INICIADO - ${stepName[$step]} ----- \n";
       echo -e "\nA${stepName[$step]}";
       echo -e "\nB$stepName[$step]";
-      echo -e "\nD${stepName[echo -e $step]}";
-      echo -e "\nE$stepName[echo -e $step]";
-      echo -e "\nF${stepName[echo $step]}";
       echo -e "\nG${stepName[@]}";
+      echo -e "\nF${stepName[echo $step]}";
+      echo -e "\nE$stepName[echo -e $step]";
+      echo -e "\nD${stepName[echo -e $step]}";
+
+
+
     };
 
     stepFinish () {
