@@ -33,6 +33,7 @@ module.exports.newEmployee = {
 
 module.exports.modifiedEmployee = {
 	firstName: "Franco_José",
+	lastName: "Bobadilla",
 	role: "CTO",
 };
 
