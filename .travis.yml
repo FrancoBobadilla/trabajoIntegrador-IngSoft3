@@ -38,6 +38,14 @@ script:
     stepInit () {
       step=$((step + 1));
       echo -e "\n\n\n\n\033[1m\e[33m ----- PASO $step DE $totalSteps INICIADO - ${stepName[$step]} ----- \n";
+      echo -e "\nA${stepName[$step]}"
+      echo -e "\nB$stepName[$step]"
+      echo -e "\nC${stepName[echo $step]}"
+      echo -e "\nD${stepName[echo -e $step]}"
+      echo -e "\nE$stepName[echo -e $step]"
+      echo -e "\nF${stepName[echo $step]}"
+      echo -e "\nG${stepName[@]}"
+
     };
 
     stepFinish () {
@@ -45,7 +53,10 @@ script:
         then echo -e "\n\033[1m\e[31m ----- PASO $step DE $totalSteps FALLIDO - ${stepName[$step]} ----- \n\n\n\n"
         exit 1
       fi;
+      then echo -e "\n\033[1m\e[32m ----- PASO $step DE $totalSteps EXITOSO - ${stepName[$step]} ----- \n\n\n\n"
     };
+
+
 
   - > # CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR
 
