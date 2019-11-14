@@ -23,7 +23,6 @@ script:
     stepInit () {
       step=$((step + 1));
       echo -e "\n\n\n\n\033[1m\e[33m ----- PASO $step DE $totalSteps INICIADO - ${stepName[$step]} ----- \n";
-      echo -e "\nA${stepName[$step]}";
     };
 
     stepFinish () {
@@ -38,5 +37,5 @@ script:
   - > # CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR
 
     stepInit;
-
+    mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
 
