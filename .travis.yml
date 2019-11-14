@@ -23,40 +23,40 @@ script:
 
   - > # CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR
 
-    echo -e "\e[33mCOMENZANDO BUILD";
+    echo -e "\n\n\n\n\e[33mCOMENZANDO BUILD\n";
 
     cd server;
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\e[31mBUILD FALLIDO"
+      then echo -e "\n\e[31mBUILD FALLIDO\n\n\n\n"
       exit 1
     fi;
-    echo -e "\e[32mBUILD EXITOSO";
+    echo -e "\n\e[32mBUILD EXITOSO\n\n\n\n";
 
 
 
 
   - > # CONSTRUCCION DE IMAGEN DE DOCKER
 
-    echo -e "\e[33mCOMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER";
+    echo -e "\n\n\n\n\e[33mCOMENZANDO CONSTRUCCION DE IMAGEN DE DOCKER\n";
 
     docker build -t $ORGANIZATION/payroll-server:latest .;
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\e[31mCONSTRUCCION FALLIDA"
+      then echo -e "\n\e[31mCONSTRUCCION FALLIDA\n\n\n\n"
       exit 1
     fi;
-    echo -e "\e[32mCONSTRUCCION EXITOSA";
+    echo -e "\n\e[32mCONSTRUCCION EXITOSA\n\n\n\n";
 
 
 
 
   - > # TEST DE INTEGRACION
 
-    echo -e "\e[33mCOMENZANDO TEST DE INTEGRACION";
+    echo -e "\n\n\n\n\e[33mCOMENZANDO TEST DE INTEGRACION\n";
 
     docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest;
     export tries=0;
@@ -68,11 +68,11 @@ script:
       curl -G localhost:$PORT
       look_exit=$?;
       if [[ "$look_exit" = "0" ]]
-        then echo "SERVICIO DISPONIBLE"
+        then echo "\nSERVICIO DISPONIBLE\n"
         break
       fi
       if [[ "$tries" -ge "$max_tries" ]]
-        then echo "LIMITE DE TIEMPO ALCANZADO"
+        then echo "\nLIMITE DE TIEMPO ALCANZADO\n"
         exit 1
         break
       fi
@@ -83,34 +83,34 @@ script:
     look_exit=$?;
     cat output/result.xml;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\e[31mTEST DE INTEGRACION FALLIDO"
+      then echo -e "\n\e[31mTEST DE INTEGRACION FALLIDO\n\n\n\n"
       exit 1
     fi;
-    echo -e "\e[32mTEST DE INTEGRACION EXITOSO";
+    echo -e "\n\e[32mTEST DE INTEGRACION EXITOSO\n\n\n\n";
 
 
 
 
   - > # DESPLIEGUE A DOCKERHUB
 
-    echo -e "\e[33mCOMENZANDO DESPLIEGUE A DOCKERHUB";
+    echo -e "\n\n\n\n\e[33mCOMENZANDO DESPLIEGUE A DOCKERHUB\n";
 
     echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin;
     docker push $ORGANIZATION/payroll-server:latest;
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\e[31mDESPLIEGUE A DOCKERHUB FALLIDO"
+      then echo -e "\n\e[31mDESPLIEGUE A DOCKERHUB FALLIDO\n\n\n\n"
       exit 1
     fi;
-    echo -e "\e[32mDESPLIEGUE A DOCKERHUB EXITOSO";
+    echo -e "\n\e[32mDESPLIEGUE A DOCKERHUB EXITOSO\n\n\n\n";
 
 
 
 
   - > # DESPLIEGUE A HEROKU REGISTRY
 
-    echo -e "\e[33mCOMENZANDO DESPLIEGUE A HEROKU REGISTRY";
+    echo -e "\n\n\n\n\e[33mCOMENZANDO DESPLIEGUE A HEROKU REGISTRY";
 
     echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com;
     docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web;
@@ -118,26 +118,26 @@ script:
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\e[31mDESPLIEGUE A HEROKU REGISTRY FALLIDO"
+      then echo -e "\e[31mDESPLIEGUE A HEROKU REGISTRY FALLIDO\n\n\n\n"
       exit 1
     fi;
-    echo -e "\e[32mDESPLIEGUE A HEROKU REGISTRY EXITOSO";
+    echo -e "\e[32mDESPLIEGUE A HEROKU REGISTRY EXITOSO\n\n\n\n";
 
 
 
 
   - > # RELEASE DE HEROKU APP STAGING
 
-    echo -e "\e[33mCOMENZANDO RELEASE DE HEROKU APP STAGING";
+    echo -e "\n\n\n\n\e[33mCOMENZANDO RELEASE DE HEROKU APP STAGING";
 
     heroku container:release web --app=$HEROKU_APP_STAGING; 
 
     look_exit=$?;
     if [[ "$look_exit" = "1" ]]
-      then echo -e "\e[31mRELEASE DE HEROKU APP STAGING FALLIDO"
+      then echo -e "\e[31mRELEASE DE HEROKU APP STAGING FALLIDO\n\n\n\n"
       exit 1
     fi;
-    echo -e "\e[32mRELEASE DE HEROKU APP STAGING EXITOSO";
+    echo -e "\e[32mRELEASE DE HEROKU APP STAGING EXITOSO\n\n\n\n";
 
 
 
