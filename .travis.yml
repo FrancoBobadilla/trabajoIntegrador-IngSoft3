@@ -24,57 +24,66 @@ script:
 
   - > # DEFINICION DE VARIABLES Y FUNCIONES DE CONTROL
 
-    export step=0;
-    export totalSteps=6;
-    export stepName=(ignore);
-
-    stepName[1]="CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR";
-    stepName[2]="CONSTRUCCION DE IMAGEN DE DOCKER";
-    stepName[3]="TEST DE INTEGRACION";
-    stepName[4]="DESPLIEGUE A DOCKERHUB";
-    stepName[5]="DESPLIEGUE A HEROKU REGISTRY";
-    stepName[6]="RELEASE DE HEROKU APP STAGING";
+    step=0;
 
     stepInit () {
       step=$((step + 1));
-      echo -e "\n\n\n\n\033[1m\e[33m ----- PASO $step DE $totalSteps INICIADO - ${stepName[$step]} ----- \n";
+      stepName=$1;
+      stepPrint INICIADO;
     };
 
     stepFinish () {
-      if [[ "$1" = "1" ]]
-        then echo -e "\n\033[1m\e[31m ----- PASO $step DE $totalSteps FALLIDO - ${stepName[$step]} ----- \n\n\n\n"
-        exit 1
+      if [[ "$?" = "1" ]]
+        then stepPrint FALLIDO;
+        sleep 2;
+        exit 1;
       fi;
+      stepPrint EXITOSO;
     };
+
+    stepPrint () {
+      case "$1" in
+      "INICIADO")
+        echo -e "\n\n\n\n\033[1m\e[33m ----- PASO $step $1 - $stepName ----- \n"
+        ;;
+      "FALLIDO")
+        echo -e "\n\033[1m\e[31m ----- PASO $step $1 - $stepName ----- \n\n\n\n"
+        ;;
+      "EXITOSO")
+        echo -e "\n\033[1m\e[32m ----- PASO $step $1 - $stepName ----- \n\n\n\n"
+        ;;
+      esac
+    };
+
 
 
 
   - > # CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR
 
-    stepInit;
+    stepInit "CONSTRUCCION DE PROYECTO MAVEN Y ANALISIS DE SONAR";
 
     cd server;
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar;
 
-    stepFinish $?;
+    stepFinish;
 
 
 
 
   - > # CONSTRUCCION DE IMAGEN DE DOCKER
 
-    stepInit;
+    stepInit "CONSTRUCCION DE IMAGEN DE DOCKER";
 
     docker build -t $ORGANIZATION/payroll-server:latest .;
 
-    stepFinish $?;
+    stepFinish;
 
 
 
 
   - > # TEST DE INTEGRACION
 
-    stepInit;
+    stepInit "TEST DE INTEGRACION";
 
     docker run -d -e "PORT=$PORT" -p $PORT:$PORT $ORGANIZATION/payroll-server:latest;
     export tries=0;
@@ -98,42 +107,42 @@ script:
     cd ../codeceptjs-rest;
     npx codeceptjs run --steps --reporter mocha-multi && cat output/result.xml;
 
-    stepFinish $?;
+    stepFinish;
 
 
 
 
   - > # DESPLIEGUE A DOCKERHUB
 
-    stepInit;
+    stepInit "DESPLIEGUE A DOCKERHUB";
 
     echo "$DOCKER_PASSWORD" | docker login -u $ORGANIZATION --password-stdin;
     docker push $ORGANIZATION/payroll-server:latest;
 
-    stepFinish $?;
+    stepFinish;
 
 
 
 
   - > # DESPLIEGUE A HEROKU REGISTRY
 
-    stepInit;
+    stepInit "DESPLIEGUE A HEROKU REGISTRY";
 
     echo "$HEROKU_API_KEY" | docker login -u_ --password-stdin registry.heroku.com;
     docker tag $ORGANIZATION/payroll-server:latest registry.heroku.com/$HEROKU_APP_STAGING/web;
     docker push registry.heroku.com/$HEROKU_APP_STAGING/web;
 
-    stepFinish $?;
+    stepFinish;
 
 
 
 
   - > # RELEASE DE HEROKU APP STAGING
 
-    stepInit;
+    stepInit "RELEASE DE HEROKU APP STAGING";
 
     heroku container:release web --app=$HEROKU_APP_STAGING; 
 
-    stepFinish $?;
+    stepFinish;
 
 
