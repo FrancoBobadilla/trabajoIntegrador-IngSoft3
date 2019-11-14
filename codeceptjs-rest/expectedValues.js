@@ -32,7 +32,7 @@ module.exports.newEmployee = {
 };
 
 module.exports.modifiedEmployee = {
-	firstName: "Franco José",
+	firstName: "Franco_José",
 	role: "CTO",
 };
 
